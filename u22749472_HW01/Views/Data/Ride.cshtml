@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewBag.Title = "Ride";
+}
+
+<style>
+    .booking-card {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container" style="background-color:lightgray">
+    <div class="row content">
+        <h2 style="text-align:center">Booking History</h2>
+
+        <div id="bookingHistoryContainer" style="text-align:center">
+            <!-- Bookings will automatically be added here -->
+        </div>
+    </div>
+ </div>
+
+    <script>
+        // Retrieve the bookings from local storage
+        const bookings = JSON.parse(localStorage.getItem('bookings'));
+
+        // Get the booking history container
+        const bookingHistoryContainer = document.getElementById('bookingHistoryContainer');
+
+        // Check if there are any bookings
+        if (bookings && bookings.length > 0) {
+            // Iterate over the bookings array
+            bookings.forEach(function (booking) {
+                // Create a new booking card
+                const bookingCard = document.createElement('div');
+                bookingCard.classList.add('booking-card');
+
+                // Populate the booking card with booking details
+                bookingCard.innerHTML = `
+                    <p>Full Name: ${booking.fullName}</p>
+                    <p>Phone: ${booking.phone}</p>
+                    <p>Pick-Up Time: ${booking.pickUpTime}</p>
+                    <p>Reason: ${booking.reason}</p>
+                    <p>Driver: ${booking.driver}</p>
+                    <p>Vehicle: ${booking.vehicle}</p>
+                    <p>Pick-Up Address: ${booking.pickUpAddress}</p>
+                `;
+
+                // Append the booking card to the booking history container
+                bookingHistoryContainer.appendChild(bookingCard);
+            });
+        } else {
+            // Display a message when there are no bookings
+            bookingHistoryContainer.innerHTML = '<p>No booking history available.</p>';
+        }
+    </script>
+

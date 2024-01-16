@@ -1,0 +1,173 @@
+﻿@model u22749472_HW01.Models.DataViewModel
+
+@{
+    ViewBag.Title = "BookingForm";
+}
+
+<center>
+    <h2>Booking Page</h2>
+</center>
+
+
+
+    <center>
+        <h3>@ViewBag.servicename</h3>
+        <div class="container">
+            <form  id="bookingForm">
+                <div class="row">
+                    <div class="col">
+                        <!--Name input + textbox-->
+                        <div class="form-group ">
+                            <label for="firstname">Full Name*:</label>
+                            <input class="form-control" id="focusedInput" type="text" placeholder="Enter name please..." style=" width:350px">
+                        </div>
+
+                        <!--Phone input + textbox-->
+                        <div class="form-group">
+                            <label for="Phone">Phone*:</label>
+                            <input class="form-control" id="disabledInput" type="text" placeholder="+27 00 000 0000" style=" width: 350px">
+                        </div>
+
+                        <!--Pick-up-time input + textbox-->
+                        <div class="form-group">
+                            <label for="pickUpTime">Pick-Up-Time*:</label>
+                            <input style="width:350px" class="form-control" id="pickupTime" type="time" name="pickupTime" required>
+                        </div>
+
+                        <!--Reason input + dropdown-->
+                        <div class="mb-3">
+                            <label for="Reason">Reason*:</label>
+                            <select id="selectedOption" name="selectedOption" class="form-control" style=" width:350px">
+                                <option value="">-- Select an option --</option>
+                                <option value="Accident">Accident</option>
+                                <option value="Heart Attack">Heart Attack</option>
+                            </select>
+                        </div>
+
+                        <!--Driver input + dropdown-->
+                        <div class="mb-3">
+                            <label for="Driver">Driver*:</label>
+                            <div style="width:350px">
+                                @Html.DropDownListFor(model => model.selectedServiceType,
+                                 new SelectList(Model.Drivers, "Id", "DriverFirstName", "DriverLastName", "DriverPhone", "ServiceType"),
+                                 "Select a driver",
+                                 new { @id = "driverDropdown", @class = "form-select" })
+                            </div>
+
+                            <!--Vehicle input + dropdown-->
+                            <div class="mb-3">
+                                <label for="Vehicle">Vehicle*:</label>
+                                <div style="width:350px">
+                                    @Html.DropDownListFor(model => model.selectedServiceType,
+                                     new SelectList(Model.Vehicles, "Id", "VehicleRegistration"),
+                                     "Select a vehicle",
+                                     new { @id = "vehicleDropdown", @class = "form-select" })
+                                </div>
+                            </div>
+
+                            <!--Pick-up-Address input + textbox-->
+                            <div class="form-group">
+                                <label for="Address">Pick-Up-Address*:</label>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="Please type your address here" style=" width: 350px">
+                            </div>
+
+                            <!--Button to book and ambulance an d take you to confirmation page-->
+                            <button type="submit" class="btn btn-primary btn-lg">Book Ambulance</button>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </center>
+
+
+
+
+<script>
+
+    // Get the form element
+    const form = document.getElementById('bookingForm');
+
+    // Event listener for form submission
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get the input values
+        const fullName = document.getElementById('focusedInput').value;
+        const phone = document.getElementById('disabledInput').value;
+        const pickUpTime = document.getElementById('pickupTime').value;
+        const reason = document.getElementById('selectedOption').value;
+        const driver = document.getElementById('driverDropdown').value;
+        const vehicle = document.getElementById('vehicleDropdown').value;
+        const pickUpAddress = document.getElementById('disabledInput').value;
+
+        // Create an object to store the data
+        const bookingData = {
+            fullName,
+            phone,
+            pickUpTime,
+            reason,
+            driver,
+            vehicle,
+            pickUpAddress
+        };
+
+        // Save the data to local storage
+        localStorage.setItem('bookingData', JSON.stringify(bookingData));
+
+        // Redirect to the confirmation page
+        location.href = '@Url.Action("BookingConfirmation", "Data")';
+    });
+</script>
+
+
+@section Scripts{
+    <script>
+        
+        
+
+        //Populate drivers
+        $("#driverDropdown").change(function () {
+                var VehicleId = $(this).val();
+             if (VehicleId) {
+                 $.get('@Url.Action("GetDriverByService", "Driver")', { DriverId: DriverId })
+                        .done(function (data) {
+                            var vehicleids = data.split(";")[0].split(",");
+                            var vehicletype = data.split(";")[1].split(",");
+                            var vehicleregistration = data.split(";")[2].split(",");
+                            var vehicles = [];
+                            for (var i = 0; i < vehicleids.length; i++) {
+                                vehicles.push({ id: vehicleids[i], type: vehicletype[i] , registration: vehicleregistration[i] });
+                            }
+                        });
+                } else {
+
+              }
+        });
+
+
+        //Populate vehicles
+         $("#vehicleDropdown").change(function () {
+                var VehicleId = $(this).val();
+             if (VehicleId) {
+                 $.get('@Url.Action("GetVehicleByService", "Vehicle")', { VehicleId: VehicleId })
+                        .done(function (data) {
+                            var vehicleids = data.split(";")[0].split(",");
+                            var vehicletype = data.split(";")[1].split(",");
+                            var vehicleregistration = data.split(";")[2].split(",");
+                            var vehicles = [];
+                            for (var i = 0; i < vehicleids.length; i++) {
+                                vehicles.push({ id: vehicleids[i], type: vehicletype[i] , registration: vehicleregistration[i] });
+                            }
+                        });
+                } else {
+
+              }
+         });
+
+    </script>
+}
+
+
+

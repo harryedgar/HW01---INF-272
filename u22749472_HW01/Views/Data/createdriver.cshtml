@@ -1,0 +1,42 @@
+﻿@model u22749472_HW01.Models.DataViewModel
+
+@{
+    ViewBag.Title = "createdriver";
+}
+
+<h2>createdriver</h2>
+
+
+@using (Html.BeginForm("createdriver", "Data", FormMethod.Post))
+{
+    <div class="form-group">
+        <label for="DriverImage">Driver Image:</label>
+        <select class="form-control" name="DriverImage" id="DriverImage">
+            <option value="/Images/driver.jpg">Male</option>
+            <option value="/Images/driverfemale.jpg">Female</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="DriverFirstName">Driver First Name:</label>
+        <input class="form-control" type="text" name="DriverFirstName" id="DriverFirstName" />
+    </div>
+    <div class="form-group">
+        <label for="DriverLastName">Driver Last Name:</label>
+        <input class="form-control" type="text" name="DriverLastName" id="DriverLastName" />
+    </div>
+    <div class="form-group">
+        <label for="DriverPhone">Driver Phone:</label>
+        <input class="form-control" type="text" name="DriverPhone" id="DriverPhone" />
+    </div>
+    <div class="form-group">
+        <label for="DriverService">Driver Service:</label>
+        <select class="form-control" name="DriverService" id="DriverService">
+            @foreach (var item in Model.Services)
+            {
+                <option value="@item.Servicetype">@Html.DisplayFor(modelItem => item.Servicetype)</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+}

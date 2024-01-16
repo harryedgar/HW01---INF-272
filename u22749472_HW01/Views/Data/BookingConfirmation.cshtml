@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "BookingConfirmation";
+}
+
+<!-- BookingConfirmation.cshtml -->
+
+<div class="container" style="background-color:lightgray">
+    <div class="row content">
+        <h2 style="text-align:center">Booking Confirmation</h2>
+
+        <div id="bookingDataContainer"  style="text-align:center">
+            <p>Full Name: <span id="fullName"></span></p>
+            <p>Phone: <span id="phone"></span></p>
+            <p>Pick-Up Time: <span id="pickUpTime"></span></p>
+            <p>Reason: <span id="reason"></span></p>
+            <p>Driver: <span id="driver"></span></p>
+            <p>Vehicle: <span id="vehicle"></span></p>
+            <p>Pick-Up Address: <span id="pickUpAddress"></span></p>
+        </div>
+        <!--Button to save the booking into Ride history-->
+        <button id="saveBookingBtn" class="btn btn-primary">Save Booking</button>
+    </div>
+</div>
+
+    <script>
+    // Retrieve the booking data from local storage
+    const bookingData = JSON.parse(localStorage.getItem('bookingData'));
+
+    // Display the data on the page
+    document.getElementById('fullName').textContent = bookingData.fullName;
+    document.getElementById('phone').textContent = bookingData.phone;
+    document.getElementById('pickUpTime').textContent = bookingData.pickUpTime;
+    document.getElementById('reason').textContent = bookingData.reason;
+    document.getElementById('driver').textContent = bookingData.driver;
+    document.getElementById('vehicle').textContent = bookingData.vehicle;
+    document.getElementById('pickUpAddress').textContent = bookingData.pickUpAddress;
+
+
+    // Event listener for saving the booking
+    document.getElementById('saveBookingBtn').addEventListener('click', function() {
+        // Retrieve existing bookings from local storage or create an empty array
+        const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+
+        // Add the current booking to the array
+        bookings.push(bookingData);
+
+        // Save the updated bookings array to local storage
+        localStorage.setItem('bookings', JSON.stringify(bookings));
+
+        // Redirect to the history view
+        location.href = '@Url.Action("Ride", "Data")';
+    });
+    </script>
+
+
+
+
+

@@ -1,0 +1,29 @@
+﻿@using u22749472_HW01.Models
+@model List<Services>
+
+@{
+    ViewBag.Title = "SelectServices";
+}
+
+<div class="container" style="background-color:lightgray">
+    <div class="row">
+        <h2 class="text-md-center display-4">Select Services</h2>
+        @foreach (var services in Model)
+        {
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @*use <ahref> to have the image as a link to booking form and pass the service type as a query parameter*@
+                        <a href="@Url.Action("BookingForm","Data", new {serviceid = services.Id, servicename = services.Servicetype} )">
+                            <img src="~/Images/vehicle.jpg" class="card-img-top" width="300" height="250">
+                        </a>
+                        <h4 class="panel-heading">@services.Servicetype</h4>
+                        <p>@services.ServiceDesc</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

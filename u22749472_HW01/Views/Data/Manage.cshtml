@@ -1,0 +1,336 @@
+﻿@model u22749472_HW01.Models.DataViewModel
+
+@{
+    ViewBag.Title = "Manage";
+}
+
+<style>
+    #myInput {
+        background-image: url('/css/searchicon.png');
+        background-position: 10px 10px;
+        background-repeat: no-repeat;
+        width: 15%;
+        font-size: 10px;
+        padding: 12px 20px 12px 40px;
+        border: 3px solid #ddd;
+        margin-bottom: 12px;
+    }
+
+    #myTable tbody tr:not([style*="display:none;"]) {
+        display: table-row;
+    }
+
+    .searchedColor {
+        color: red;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<h2>Manage</h2>
+
+<div class="container-fluid text-center" style="background-color:lightgray">
+    <div class="row content">
+        <h2 class="text-lg-start">Drivers</h2>
+
+        <!--Create new driver-->
+        <button class="btn btn-primary" style="width:100px" onclick="location.href = '@Url.Action("createdriver","Data")'"> Create</button>
+
+        <!--Inputs for searching drivers-->
+        <input style="width:200px" type="text" id="firstNameInput" placeholder="Search by First Name">
+        <br />
+        <select id="serviceSelect" style="width:200px">
+            <option value="">All Services</option>
+            <option value="Service1">ALS (Advances Life Support)</option>
+            <option value="Service2">BLS (Basic Life Support)</option>
+            <option value="Service3">Patient Transport</option>
+            <option value="Service3">Medical Utility Vehicle</option>
+            <option value="Service3">Event Medical Ambulance</option>
+            <option value="Service3">Air Ambulance</option>
+        </select>
+
+        <!--search button will then filter the table-->
+        <button style="width:200px" onclick="filterTable()">Search</button>
+
+
+        <table id="myTable" class="table table-bordered bg-white">
+            <tr style="color: black;">
+                <th style="width:25px">
+                    Image
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Phone Number
+                </th>
+                <th>
+                    Service
+                </th>
+                <th>
+                    Controls
+                </th>
+            </tr>
+            @foreach (var item in Model.Drivers)
+            {
+                <tr>
+                    <td>
+                        <img src="~/Images/driver.jpg" style="width:40px" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DriverFirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DriverLastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DriverPhone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceType)
+                    </td>
+                    <td>
+                        <button class="btn btn-warning" onclick="updateRow(this)">Update</button>
+                        <input class="btn btn-danger" type="button" value="Delete" onclick="DeleteRowFunction(this)">
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+
+
+<div class="container-fluid text-center" style="background-color:lightgray">
+    <div class="row content">
+        <h2 class="text-start">Vehicles</h2>
+        <table id="vehicletable" class="table table-bordered bg-white">
+            <!-- Table content here -->
+            <tr style="  color:black">
+                <th style="width:25px">
+                    Image
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Registration
+                </th>
+                <th>
+                    Services
+                </th>
+                <th>
+                    Controls
+                </th>
+            </tr>
+            @foreach (var item in Model.Vehicles)
+            {
+                <tr>
+                    <td>
+                        <img src="~/Images/vehicle.jpg" style="width:40px" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VehicleType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VehicleRegistration)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServiceType)
+                    </td>
+                    <td>
+                        <button class="btn btn-warning" onclick="updateRowVeh(this)">Update</button>
+                        <input class="btn btn-danger" type="button" value="Delete" onclick="DeleteRowFunction(this)">
+                    </td>
+                </tr>
+            }
+        </table>
+        <button class="btn btn-primary" onclick="exportTableData()">Export</button>
+    </div>
+</div>
+
+<script>
+    //script function used to export the data
+    function exportTableData() {
+        var table = document.getElementById("vehicletable");
+        var rows = table.getElementsByTagName("tr");
+        var data = [];
+
+        for (var i = 0; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName("td");
+            var rowData = [];
+
+            for (var j = 0; j < cells.length; j++) {
+                rowData.push(cells[j].textContent.trim());
+            }
+
+            data.push(rowData.join("\t"));
+        }
+
+        var textToSave = data.join("\n");
+        var hiddenElement = document.createElement("a");
+        hiddenElement.href = "data:text/plain;charset=utf-8," + encodeURIComponent(textToSave);
+        hiddenElement.target = "_blank";
+        hiddenElement.download = "table_data.txt";
+        hiddenElement.click();
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function filterTable() {
+        var input, filter, table, tr, td, i, select;
+        input = document.getElementById("firstNameInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        select = document.getElementById("serviceSelect");
+        serviceFilter = select.value;
+
+        for (i = 0; i < tr.length; i++) {
+            tdFirstName = tr[i].getElementsByTagName("td")[1];
+            tdService = tr[i].getElementsByTagName("td")[4];
+            if (tdFirstName && tdService) {
+                firstNameValue = tdFirstName.textContent || tdFirstName.innerText;
+                serviceValue = tdService.textContent || tdService.innerText;
+
+                if (
+                    (filter === "" || firstNameValue.toUpperCase().indexOf(filter) > -1) &&
+                    (serviceFilter === "" || serviceValue.toUpperCase() === serviceFilter.toUpperCase())
+                ) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+
+
+<script>
+
+    //Delete row function
+    function DeleteRowFunction(o) {
+        var p = o.parentNode.parentNode;
+        p.parentNode.removeChild(p);
+    }
+
+    //Update Driver
+    var data = []; // Array to store the table data
+    var selectedRow = null; // Reference to the currently selected row for editing
+
+    function updateRow(button) {
+        var row = button.parentNode.parentNode;
+        selectedRow = row;
+
+        var firstNameCell = row.cells[1];
+        var lastNameCell = row.cells[2];
+        var phoneCell = row.cells[3];
+        var serviceCell = row.cells[4];
+
+        var firstName = firstNameCell.textContent.trim();
+        var lastName = lastNameCell.textContent.trim();
+        var phone = phoneCell.textContent.trim();
+        var service = serviceCell.textContent.trim();
+
+        firstNameCell.innerHTML = '<input type="text" class="form-control" value="' + firstName + '">';
+        lastNameCell.innerHTML = '<input type="text" class="form-control" value="' + lastName + '">';
+        phoneCell.innerHTML = '<input type="text" class="form-control" value="' + phone + '">';
+        serviceCell.innerHTML = '<input type="text" class="form-control" value="' + service + '">';
+
+        button.textContent = "Save";
+        button.classList.remove("btn-warning");
+        button.classList.add("btn-success");
+        button.onclick = saveRow;
+    }
+
+    function saveRow() {
+        if (selectedRow) {
+            var firstNameCell = selectedRow.cells[1];
+            var lastNameCell = selectedRow.cells[2];
+            var phoneCell = selectedRow.cells[3];
+            var serviceCell = selectedRow.cells[4];
+
+            var firstName = firstNameCell.firstChild.value.trim();
+            var lastName = lastNameCell.firstChild.value.trim();
+            var phone = phoneCell.firstChild.value.trim();
+            var service = serviceCell.firstChild.value.trim();
+
+            firstNameCell.innerHTML = firstName;
+            lastNameCell.innerHTML = lastName;
+            phoneCell.innerHTML = phone;
+            serviceCell.innerHTML = service;
+
+            selectedRow = null;
+
+            // Change button text and event handler
+            var updateButton = this;
+            updateButton.textContent = "Update";
+            updateButton.classList.remove("btn-success");
+            updateButton.classList.add("btn-warning");
+            updateButton.onclick = function () { updateRow(updateButton); };
+        }
+    }
+
+
+
+    //Update vehicle
+    var data1 = []; // Array to store the table data
+    var selectedRow1 = null; // Reference to the currently selected row for editing
+
+    function updateRowVeh(button) {
+        var row1 = button.parentNode.parentNode;
+        selectedRow1 = row1;
+
+        var vehicletypeCell = row1.cells[1];
+        var registrationCell = row1.cells[2];
+        var serviceCell = row1.cells[3];
+
+        var vehicletype = vehicletypeCell.textContent.trim();
+        var registration = registrationCell.textContent.trim();
+        var service = serviceCell.textContent.trim();
+
+        vehicletypeCell.innerHTML = '<input type="text" class="form-control" value="' + vehicletype + '">';
+        registrationCell.innerHTML = '<input type="text" class="form-control" value="' + registration + '">';
+        serviceCell.innerHTML = '<input type="text" class="form-control" value="' + service + '">';
+
+        button.textContent = "Save";
+        button.classList.remove("btn-warning");
+        button.classList.add("btn-success");
+        button.onclick = saveRowVeh;
+    }
+
+    function saveRowVeh() {
+        if (selectedRow1) {
+            var vehicletypeCell = selectedRow1.cells[1];
+            var registrationCell = selectedRow1.cells[2];
+            var serviceCell = selectedRow1.cells[3];
+
+            var vehicletype = vehicletypeCell.firstChild.value.trim();
+            var registration = registrationCell.firstChild.value.trim();
+            var service = serviceCell.firstChild.value.trim();
+
+            vehicletypeCell.innerHTML = vehicletype;
+            registrationCell.innerHTML = registration;
+            serviceCell.innerHTML = service;
+
+            selectedRow1 = null;
+
+            // Change button text and event handler
+            var updateButton1 = this;
+            updateButton1.textContent = "Update";
+            updateButton1.classList.remove("btn-success");
+            updateButton1.classList.add("btn-warning");
+            updateButton1.onclick = function () { updateRowVeh(updateButton1); };
+        }
+    }
+</script>
