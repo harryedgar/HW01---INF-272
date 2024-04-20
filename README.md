@@ -1,3 +1,5 @@
+https://github.com/harryedgar/HW01---INF-272/assets/143422915/464a89a3-0687-4d62-97ca-1579f891e710
+
 ## 1. High-Level Case Description
 RescueBus is an innovative ambulance booking system designed for the city of Townsville, addressing Mayor George Thompson's request for an emergency service system. The platform enables citizens to book ambulances quickly and efficiently, including emergency situations through an S.O.S. feature. With improved response times, RescueBus aims to save lives, such as Jane, a mother potentially facing a medical emergency. The system manages drivers and vehicles separately, generating booking confirmation reports and ride history for enhanced efficiency and accountability.
 
